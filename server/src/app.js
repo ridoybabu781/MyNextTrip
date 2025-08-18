@@ -32,6 +32,10 @@ app.use("/api/travel", TravelRouter);
 app.use("/api/booking", BookingRouter);
 app.use("/api/payment", PaymentRouter);
 
+app.use("/", (req, res) => {
+  res.send("Home Page");
+});
+
 // Centralized error handler
 app.use(errorHandler);
 
