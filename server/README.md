@@ -1,5 +1,5 @@
 
-````
+
 # My Next Trip - Backend API
 
 Welcome to the **My Next Trip** backend! This is a Node.js + Express + MongoDB project that powers a travel booking platform. The backend handles user authentication, travel management, bookings, payments (including SSLCommerz), and admin functionalities.
