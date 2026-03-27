@@ -1,13 +1,9 @@
 const Joi = require("joi");
 
-Joi.objectId = require("joi-objectid")(Joi);
-
 const addBookingSchema = Joi.object({
-  tourName: Joi.string().required(),
-  tourLocation: Joi.string().required(),
   numberOfTraveler: Joi.number().default(1),
   tourDate: Joi.date().required(),
-  paymentMethod: Joi.string().valid("COD", "SSLCommerz").required(),
+  paymentMethod: Joi.string().valid("cash", "sslcommerz").required(),
   status: Joi.string()
     .valid("Pending", "Confirmed", "Cancelled")
     .default("Pending"),

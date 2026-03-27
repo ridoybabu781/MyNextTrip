@@ -6,6 +6,9 @@ const addTravelSchema = Joi.object({
   title: Joi.string().required().min(5).max(100).trim(),
   description: Joi.string().required().min(20).trim(),
   price: Joi.number().required().min(0),
+  type: Joi.string()
+    .valid("Travel", "Hotel", "Flight", "Car", "Cruise")
+    .default("Travel"),
   location: Joi.string().trim().required(),
   duration: Joi.number().required().min(1),
   categories: Joi.array().items(Joi.string()),

@@ -1,6 +1,3 @@
-// A socket.io server that can send messages to a specific user and show the user is online or offline
-const jwt = require("jsonwebtoken");
-
 const users = {};
 let ioInstance = null;
 

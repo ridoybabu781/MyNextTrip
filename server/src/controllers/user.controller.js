@@ -155,32 +155,6 @@ const profile = async (req, res, next) => {
   }
 };
 
-const getAllAgencies = async (req, res, next) => {
-  try {
-    const userId = req.userId;
-
-    const user = await User.findById(userId);
-
-    if (!user.role === "admin") {
-      return next(createError(401, "Unauthorized User"));
-    }
-
-    const agencies = await User.find({
-      role: "agency",
-      isAgent: "yes",
-      isBlocked: { $ne: true },
-    });
-
-    if (agencies?.length === 0) {
-      return next(createError(404, "No Agency Available"));
-    }
-
-    res.status(200).json({ message: "All Agency loaded", agencies });
-  } catch (error) {
-    next(error);
-  }
-};
-
 const updateProfile = async (req, res, next) => {
   try {
     const userId = req.userId;
@@ -247,7 +221,7 @@ const updateProfilePicture = async (req, res, next) => {
     const photo = req.file;
 
     const result = await cloudinary.uploader.upload(photo.path, {
-      folder: "sonod/userPhoto",
+      folder: "myNextTrip/userPhoto",
     });
 
     fs.unlinkSync(photo.path);
@@ -273,7 +247,7 @@ const updateCoverPicture = async (req, res, next) => {
     const photo = req.file;
 
     const result = await cloudinary.uploader.upload(photo.path, {
-      folder: "sonod/coverPhoto",
+      folder: "myNextTrip/coverPhoto",
     });
 
     fs.unlinkSync(photo.path);
@@ -376,108 +350,6 @@ const forgetPassword = async (req, res, next) => {
   }
 };
 
-const deleteProfile = async (req, res, next) => {
-  try {
-    const userId = req.userId;
-    const profileId = req.params.id;
-
-    const user = await User.findById(userId);
-
-    if (user.role !== "admin") {
-      return next(createError(401, "You're not allowed to do that"));
-    }
-
-    const res = await User.findByIdAndDelete(profileId);
-
-    if (!res) {
-      return next(createError(400, "Something went wrong"));
-    }
-    res.status(200).json({ message: "Profile Deleted Successfully" });
-  } catch (error) {}
-};
-
-const blockProfile = async (req, res, next) => {
-  try {
-    const userId = req.userId;
-    const id = req.params.id;
-
-    const user = await User.findById(userId);
-
-    if (user.role !== "admin") {
-      return next(createError(401, "You're not allowed to do that"));
-    }
-
-    const blockedUser = await User.findByIdAndUpdate(
-      id,
-      { isBlocked: true },
-      { new: true }
-    );
-
-    if (!blockedUser) {
-      return next(createError(400, "Profile Blocking Failed"));
-    }
-
-    res
-      .status(200)
-      .json({ message: "One Profile Blocked Successfully", blockedUser });
-  } catch (error) {
-    next(error);
-  }
-};
-
-const unBlockProfile = async (req, res, next) => {
-  try {
-    const userId = req.userId;
-    const id = req.params.id;
-
-    const user = await User.findById(userId);
-
-    if (user.role !== "admin") {
-      return next(createError(401, "You're not allowed to do that"));
-    }
-
-    const unBlockedUser = await User.findByIdAndUpdate(
-      id,
-      { isBlocked: false },
-      { new: true }
-    );
-
-    if (!unBlockedUser) {
-      return next(createError(400, "Profile Unblocking Failed"));
-    }
-
-    res
-      .status(200)
-      .json({ message: "One Profile Blocked Successfully", unBlockedUser });
-  } catch (error) {
-    next(error);
-  }
-};
-
-const getBlockedProfile = async (req, res, next) => {
-  try {
-    const userId = req.userId;
-
-    const user = await User.findById(userId);
-
-    if (user.role !== "admin") {
-      return next(createError(401, "You're not allowed to do that"));
-    }
-
-    const blockedProfiles = await User.find({ isBlocked: true });
-
-    if (!blockedProfiles) {
-      return next(createError(404, "There's no Blocked Profiles"));
-    }
-
-    res
-      .status(201)
-      .json({ message: "All Blocked Profile Fetched", blockedProfiles });
-  } catch (error) {
-    next(error);
-  }
-};
-
 const logout = async (req, res, next) => {
   try {
     res.clearCookie("token", {
@@ -503,9 +375,4 @@ module.exports = {
   forgetPasswordCode,
   forgetPassword,
   logout,
-  getAllAgencies,
-  deleteProfile,
-  blockProfile,
-  unBlockProfile,
-  getBlockedProfile,
 };

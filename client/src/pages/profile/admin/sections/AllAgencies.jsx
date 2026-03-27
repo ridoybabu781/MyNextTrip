@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import UserState from "../../../../state/UserState";
+import AdminState from "../../../../state/AdminState";
 import AgencyCard from "../../../../components/user/AgencyCard";
 
 export default function AllAgencies() {
-  const { getAllAgencies, agencies } = UserState();
+  const { getAllAgencies, agencies } = AdminState();
   const [isLoading, setIsLoading] = useState(false);
   const [isBlocking, setIsBlocking] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [blockAgencyId, setBlockAgencyId] = useState(null);
   const [deleteAgencyId, setDeleteAgencyId] = useState(null);
 
-  const { blockProfile, deleteProfile } = UserState();
+  const { blockProfile, deleteProfile } = AdminState();
 
   const findAgencies = async () => {
     const res = await getAllAgencies();

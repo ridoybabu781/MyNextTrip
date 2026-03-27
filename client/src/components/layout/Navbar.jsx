@@ -24,10 +24,10 @@ export default function Navbar({ user, logout }) {
   };
 
   const handleLogout = async () => {
-    const res = await logout();
-    if (res.success) {
-      console.log("Logged Out Successfully");
-    }
+    await logout();
+
+    navigate("/");
+    window.location.reload();
   };
 
   return (

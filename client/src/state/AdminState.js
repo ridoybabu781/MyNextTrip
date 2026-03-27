@@ -7,6 +7,9 @@ const AdminState = create((set) => {
     message: "",
     error: null,
     selectedPortion: "profile",
+    blockedProfiles: [],
+
+    loading: false,
 
     setSelectedPortion: (portion) => {
       set((state) => ({
@@ -16,7 +19,7 @@ const AdminState = create((set) => {
 
     getPendingAgencies: async () => {
       try {
-        const result = await axiosInstance.get("/auth/getPendingAgencies");
+        const result = await axiosInstance.get("/admin/getPendingAgencies");
         set({
           agencies: result.data.agencies,
           error: null,
@@ -31,7 +34,7 @@ const AdminState = create((set) => {
     },
     approveAgency: async (id) => {
       try {
-        const result = await axiosInstance.post(`/auth/approveAgency/${id}`);
+        const result = await axiosInstance.post(`/admin/approveAgency/${id}`);
         set({ error: null, message: result.message });
       } catch (error) {
         set({
@@ -42,10 +45,77 @@ const AdminState = create((set) => {
     },
     rejectAgency: async (id) => {
       try {
-        const result = await axiosInstance.post(`/auth/rejectAgency/${id}`);
+        const result = await axiosInstance.post(`/admin/rejectAgency/${id}`);
         set({ error: null, message: result.message });
       } catch (error) {
         set({
+          error: error.response?.data?.message || error.message,
+          loading: false,
+        });
+      }
+    },
+
+    getAllAgencies: async () => {
+      try {
+        const res = await axiosInstance.get("/admin/getAllAgencies");
+
+        set({ agencies: res.data.agencies });
+        return res;
+      } catch (error) {
+        set({
+          user: null,
+          error: error.response?.data?.message || error.message,
+          loading: false,
+        });
+      }
+    },
+    deleteProfile: async (id) => {
+      try {
+        const res = await axiosInstance.delete(`/admin/deleteProfile/${id}`);
+        set({ message: res.data.message });
+      } catch (error) {
+        set({
+          error: error.response?.data?.message || error.message,
+          loading: false,
+        });
+      }
+    },
+
+    blockProfile: async (id) => {
+      try {
+        const res = await axiosInstance.put(`/admin/blockProfile/${id}`);
+        set({ message: res.data.message });
+      } catch (error) {
+        set({
+          error: error.response?.data?.message || error.message,
+          loading: false,
+        });
+      }
+    },
+
+    unBlockProfile: async (id) => {
+      try {
+        const res = await axiosInstance.put(`/admin/unBlockProfile/${id}`);
+        set({ message: res.data.message });
+      } catch (error) {
+        set({
+          error: error.response?.data?.message || error.message,
+          loading: false,
+        });
+      }
+    },
+
+    getBlockedProfiles: async () => {
+      try {
+        const res = await axiosInstance.get(`/admin/getBlockedProfiles`);
+        set({
+          message: res.data.message,
+          blockedProfiles: res.data.blockedProfiles || [],
+        });
+        return res;
+      } catch (error) {
+        set({
+          blockedProfiles: [],
           error: error.response?.data?.message || error.message,
           loading: false,
         });

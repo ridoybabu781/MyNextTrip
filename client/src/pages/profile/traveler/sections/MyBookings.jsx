@@ -38,9 +38,12 @@ export default function MyBookings({ bookings, loading }) {
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
-          {bookings.map((booking) => (
-            <Booking booking={booking} key={booking._id} />
-          ))}
+          {bookings.map(
+            (booking) =>
+              booking.status === "Pending" && (
+                <Booking booking={booking} key={booking._id} />
+              )
+          )}
         </div>
       )}
     </div>

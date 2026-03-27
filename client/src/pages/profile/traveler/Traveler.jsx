@@ -4,14 +4,15 @@ import CanceledTravels from "./sections/CanceledTravels";
 import CompletedTravels from "./sections/CompletedTravels";
 import MyBookings from "./sections/MyBookings";
 import ProfileDetails from "./sections/ProfileDetails";
+import BookingStore from "../../../state/BookingStore";
 
 export default function Traveler({ user }) {
-  const { selectedSection, setSelectedSection, myBookings, bookings, loading } =
-    TravelerState();
+  const { selectedSection, setSelectedSection } = TravelerState();
+  const { myBookings, getMyBookings, loading } = BookingStore();
 
   useEffect(() => {
     const fetchBooking = async () => {
-      await myBookings();
+      await getMyBookings();
     };
 
     fetchBooking();
@@ -20,11 +21,11 @@ export default function Traveler({ user }) {
   const Sections = () => {
     switch (selectedSection) {
       case "bookings":
-        return <MyBookings bookings={bookings} loading={loading} />;
+        return <MyBookings bookings={myBookings} loading={loading} />;
       case "completed":
-        return <CompletedTravels />;
+        return <CompletedTravels bookings={myBookings} loading={loading} />;
       case "canceled":
-        return <CanceledTravels />;
+        return <CanceledTravels bookings={myBookings} loading={loading} />;
       default:
         return <MyBookings />;
     }

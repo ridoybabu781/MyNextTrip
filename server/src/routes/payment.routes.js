@@ -5,14 +5,14 @@ const {
   fail,
   success,
   cancel,
-  COD,
+  Cash,
 } = require("../controllers/payment.controller");
 const PaymentRouter = express.Router();
 
-PaymentRouter.post("/cod/:id", User, COD);
+PaymentRouter.post("/cash/:id", User, Cash);
 PaymentRouter.post("/payBill/:id", User, payBill);
-PaymentRouter.post("/success", success);
-PaymentRouter.post("/fail", fail);
-PaymentRouter.post("/cancel", cancel);
+PaymentRouter.post("/success/:id", success);
+PaymentRouter.post("/fail/:id", fail);
+PaymentRouter.post("/cancel/:id", cancel);
 
 module.exports = PaymentRouter;

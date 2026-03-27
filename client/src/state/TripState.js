@@ -66,8 +66,6 @@ const useTravelStore = create((set) => ({
     try {
       const { data } = await axiosInstance.get("/travel/getMyTravels");
 
-      console.log(data.travels);
-
       set({ agencyTravels: data ? data.travels : [] });
       set({ error: "" });
     } catch (error) {

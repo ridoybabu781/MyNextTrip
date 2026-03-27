@@ -127,7 +127,9 @@ export default function ProfileDetails({ user }) {
                   />
                   <span>
                     <span className="font-semibold">Birth Date:</span>{" "}
-                    {editData.birthDate || "N/A"}
+                    {editData.birthDate
+                      ? new Date(editData.birthDate).toLocaleDateString()
+                      : "N/A"}
                   </span>
                 </div>
                 <div className="flex items-center gap-3">

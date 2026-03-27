@@ -6,15 +6,18 @@ const BookingSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
     travelId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Travel",
       required: true,
+      index: true,
     },
     tourName: {
       type: String,
       required: true,
+      index: true,
     },
     tourLocation: {
       type: String,
@@ -31,13 +34,13 @@ const BookingSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["Pending", "Confirmed", "Cancelled"],
+      enum: ["Pending", "Confirmed", "Cancelled", "Completed"],
       default: "Pending",
     },
-    paymentMethod: { type: String, enum: ["COD", "SSLCommerz"] },
+    paymentMethod: { type: String, enum: ["cash", "sslcommerz"] },
     paymentStatus: {
       type: String,
-      enum: ["Pending", "Paid", "Failed"],
+      enum: ["Pending", "Paid", "Failed", "Canceled"],
       default: "Pending",
     },
     totalPrice: {

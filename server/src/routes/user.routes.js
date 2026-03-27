@@ -1,10 +1,4 @@
 const {
-  createAdmin,
-  approveAgency,
-  rejectAgency,
-  getPendingAgencies,
-} = require("../controllers/admin.controller");
-const {
   sendCode,
   createUser,
   login,
@@ -16,11 +10,6 @@ const {
   updatePassword,
   logout,
   updateCoverPicture,
-  getAllAgencies,
-  deleteProfile,
-  blockProfile,
-  unBlockProfile,
-  getBlockedProfile,
 } = require("../controllers/user.controller");
 const validation = require("../middleware/validation");
 
@@ -30,6 +19,7 @@ const {
   createUserSchema,
   loginUserSchema,
 } = require("../validation/user.validate");
+const Admin = require("../middleware/Admin");
 const router = require("express").Router();
 
 router.post("/sendCode", sendCode);
@@ -55,18 +45,5 @@ router.post("/forgetPassword", forgetPassword);
 router.post("/logout", userCheck, logout);
 
 // Admin Area
-
-router.post("/admin/rr/rsc-create-bro-admin", createAdmin);
-
-router.get("/getAllAgencies", userCheck, getAllAgencies);
-
-router.delete("/deleteProfile/:id", userCheck, deleteProfile);
-router.put("/blockProfile/:id", userCheck, blockProfile);
-router.put("/unBlockProfile/:id", userCheck, unBlockProfile);
-router.get("/getBlockedProfiles", userCheck, getBlockedProfile);
-
-router.get("/getPendingAgencies", userCheck, getPendingAgencies);
-router.post("/approveAgency/:agencyId", userCheck, approveAgency);
-router.post("/rejectAgency/:agencyId", userCheck, rejectAgency);
 
 module.exports = router;

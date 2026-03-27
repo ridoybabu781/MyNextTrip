@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import UserState from "../../../../state/UserState";
 import BlockedAgencyCard from "../components/BlockedAgencyCard";
+import AdminState from "../../../../state/AdminState";
 
 export default function BlockedAgencies() {
-  const { getBlockedProfiles, blockedProfiles, unBlockProfile } = UserState();
+  const { getBlockedProfiles, blockedProfiles, unBlockProfile } = AdminState();
   const [unblockAgencyId, setUnblockAgencyId] = useState(null);
   const [isUnblocking, setIsUnblocking] = useState(false);
 

@@ -3,7 +3,7 @@ const Booking = require("../models/booking.model");
 const axios = require("axios");
 const qs = require("qs");
 
-const COD = async (req, res, next) => {
+const Cash = async (req, res, next) => {
   try {
     const userId = req.userId;
     const bookingId = req.params.id;
@@ -17,7 +17,7 @@ const COD = async (req, res, next) => {
       return res.status(404).json({ message: "Booking Not Found" });
     }
 
-    booking.paymentMethod = "COD";
+    booking.paymentMethod = "COCD";
     await booking.save();
     res.status(200).json({ message: "COD Payment method added ", booking });
   } catch (error) {
@@ -29,6 +29,8 @@ const payBill = async (req, res) => {
   try {
     const user = req.userId;
     const bookingId = req.params.id;
+
+    console.log(bookingId);
 
     const booking = await Booking.findOne({
       _id: bookingId,
@@ -47,9 +49,9 @@ const payBill = async (req, res) => {
       total_amount: booking.totalPrice,
       currency: "BDT",
       tran_id: transactionId,
-      success_url: `http://localhost:5050/api/payment/success`,
-      fail_url: "http://localhost:5050/api/payment/fail",
-      cancel_url: "http://localhost:5050/api/payment/cancel",
+      success_url: `http://localhost:5050/api/payment/success/${bookingId}`,
+      fail_url: `http://localhost:5050/api/payment/fail/${bookingId}`,
+      cancel_url: `http://localhost:5050/api/payment/cancel/${bookingId}`,
       cus_name: booking.travelerId.name,
       cus_email: booking.travelerId.email,
       product_name: booking.tourName,
@@ -66,7 +68,7 @@ const payBill = async (req, res) => {
       },
     });
 
-    booking.paymentMethod = "SSLCommerz";
+    booking.paymentMethod = "sslcommerz";
     await booking.save();
 
     res.json({
@@ -83,20 +85,56 @@ const payBill = async (req, res) => {
 };
 
 const success = async (req, res) => {
-  res.send("Payment Successful");
-  res.redirect(`${process.env.CORS_ORIGIN}/payment/success`);
+  try {
+    const id = req.params.id;
+    const booking = await Booking.findByIdAndUpdate(
+      id,
+      { paymentStatus: "Paid" },
+      { new: true }
+    );
+    if (!booking) {
+      return res.status(400).json({ message: "Success Failed" });
+    }
+    res.redirect(`${process.env.CORS_ORIGIN}/payment/success/${id}`);
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
 };
-const fail = (req, res) => {
-  res.send("Payment Failed");
-  res.redirect(`${process.env.CORS_ORIGIN}/payment/failed`);
+const fail = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const booking = await Booking.findByIdAndUpdate(
+      id,
+      { paymentStatus: "Failed" },
+      { new: true }
+    );
+    if (!booking) {
+      return res.status(400).json({ message: "Fail Updation Failed" });
+    }
+    res.redirect(`${process.env.CORS_ORIGIN}/payment/failed/${id}`);
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
 };
-const cancel = (req, res) => {
-  res.send("Payment Cancelled");
-  res.redirect(`${process.env.CORS_ORIGIN}/payment/canceled`);
+const cancel = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const booking = await Booking.findByIdAndUpdate(
+      id,
+      { paymentStatus: "Canceled" },
+      { new: true }
+    );
+    if (!booking) {
+      return res.status(400).json({ message: "Fail Updation Failed" });
+    }
+    res.redirect(`${process.env.CORS_ORIGIN}/payment/canceled/${id}`);
+  } catch (error) {
+    return res.status(400).json({ message: error.message });
+  }
 };
 
 module.exports = {
-  COD,
+  Cash,
   payBill,
   success,
   fail,

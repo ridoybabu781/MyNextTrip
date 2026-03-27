@@ -10,8 +10,6 @@ const authUser = create((set) => {
     token: null,
     profilePic: null,
     coverPic: null,
-    agencies: [],
-    blockedProfiles: [],
 
     sendCode: async (email) => {
       set({ loading: true, error: null });
@@ -95,20 +93,6 @@ const authUser = create((set) => {
         console.warn("User not logged in or session expired.");
         set({
           user: null,
-          loading: false,
-        });
-      }
-    },
-    getAllAgencies: async () => {
-      try {
-        const res = await axiosInstance.get("/auth/getAllAgencies");
-
-        set({ agencies: res.data.agencies });
-        return res;
-      } catch (error) {
-        set({
-          user: null,
-          error: error.response?.data?.message || error.message,
           loading: false,
         });
       }
@@ -269,59 +253,6 @@ const authUser = create((set) => {
           loading: false,
         });
         return { success: false };
-      }
-    },
-
-    deleteProfile: async (id) => {
-      try {
-        const res = await axiosInstance.delete(`/auth/deleteProfile/${id}`);
-        set({ message: res.data.message });
-      } catch (error) {
-        set({
-          error: error.response?.data?.message || error.message,
-          loading: false,
-        });
-      }
-    },
-
-    blockProfile: async (id) => {
-      try {
-        const res = await axiosInstance.put(`/auth/blockProfile/${id}`);
-        set({ message: res.data.message });
-      } catch (error) {
-        set({
-          error: error.response?.data?.message || error.message,
-          loading: false,
-        });
-      }
-    },
-
-    unBlockProfile: async (id) => {
-      try {
-        const res = await axiosInstance.put(`/auth/unBlockProfile/${id}`);
-        set({ message: res.data.message });
-      } catch (error) {
-        set({
-          error: error.response?.data?.message || error.message,
-          loading: false,
-        });
-      }
-    },
-
-    getBlockedProfiles: async () => {
-      try {
-        const res = await axiosInstance.get(`/auth/getBlockedProfiles`);
-        set({
-          message: res.data.message,
-          blockedProfiles: res.data.blockedProfiles || [],
-        });
-        return res;
-      } catch (error) {
-        set({
-          blockedProfiles: [],
-          error: error.response?.data?.message || error.message,
-          loading: false,
-        });
       }
     },
 

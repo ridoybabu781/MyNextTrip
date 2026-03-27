@@ -4,16 +4,24 @@ const cloud = require("../utils/cloudinary");
 const fs = require("fs");
 const createError = require("http-errors");
 
-// Add a new travel
 const addTravel = async (req, res, next) => {
   try {
-    const { title, description, price, location, duration, categories, type } =
-      req.body;
-    const agencyId = req.userId;
+    const {
+      title,
+      description,
+      tourType,
+      price,
+      location,
+      duration,
+      categories,
+      type,
+    } = req.body;
+    const agency = req.agency;
 
     if (
       !title ||
       !description ||
+      !tourType ||
       !price ||
       !categories ||
       !location ||
@@ -21,29 +29,21 @@ const addTravel = async (req, res, next) => {
     ) {
       return next(createError(400, "All fields are required"));
     }
-    console.log(req.body);
-
-    const agency = await User.findById(agencyId);
-    if (!agency || agency.role !== "agency") {
-      return next(createError(403, "You're not authorized to add travel"));
-    }
 
     if (!agency.address && !agency.phone) {
       return next(
-        createError(404),
-        "Address and Phone Number not added to Your Profile"
+        createError(404, "Address and Phone Number not added to Your Profile")
       );
     }
 
-    console.log(agency.address, agency.phone);
-
     const travel = new Travel({
-      agencyId,
+      agencyId: req.agencyId,
       title,
       type,
       description,
       price,
       location,
+      type: tourType,
       duration,
       categories,
       email: agency.email,
@@ -58,7 +58,6 @@ const addTravel = async (req, res, next) => {
   }
 };
 
-// Add travel image (Cloudinary + Multer)
 const addTravelImages = async (req, res, next) => {
   try {
     const travel = await Travel.findById(req.params.id);
@@ -81,7 +80,6 @@ const addTravelImages = async (req, res, next) => {
   }
 };
 
-// Get all travels (paginated)
 const getTravels = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -99,7 +97,6 @@ const getTravels = async (req, res, next) => {
   }
 };
 
-// Get single travel by ID
 const getTravel = async (req, res, next) => {
   try {
     const travel = await Travel.findById(req.params.id);
@@ -112,10 +109,10 @@ const getTravel = async (req, res, next) => {
   }
 };
 
-// Get travels of current agency
 const getAgencyTravels = async (req, res, next) => {
   try {
-    const agencyId = req.userId;
+    const agencyId = req.agencyId;
+
     const travels = await Travel.find({ agencyId }).sort({ createdAt: -1 });
 
     res.status(200).json({ travels });
@@ -124,7 +121,6 @@ const getAgencyTravels = async (req, res, next) => {
   }
 };
 
-// Search travels
 const searchTravels = async (req, res, next) => {
   try {
     const { q } = req.query;
@@ -149,7 +145,6 @@ const searchTravels = async (req, res, next) => {
   }
 };
 
-// Update travel
 const updateTravel = async (req, res, next) => {
   try {
     const travel = await Travel.findByIdAndUpdate(req.params.id, req.body, {
@@ -164,7 +159,6 @@ const updateTravel = async (req, res, next) => {
   }
 };
 
-// Delete travel
 const deleteTravel = async (req, res, next) => {
   try {
     const travel = await Travel.findByIdAndDelete(req.params.id);
